@@ -94,6 +94,22 @@ public class RemotePushNotification
 #endif
 	}
 
+#if UNITY_IPHONE
+	/* Objective-Cの関数を呼び出せるように宣言 */
+	/* @note 今回は無し */
+	[DllImport("__Internal")]
+    private static extern string GetDeviceTokenChr();
+
+	[DllImport("__Internal")]
+	private static extern bool GotDeviceToken();
+
+	[DllImport("__Internal")]
+	private static extern void StartDeviceToken();
+
+	[DllImport("__Internal")]
+	static extern void CleanIconBadge_();
+#endif
+
 	/*------------------------------------------------------------------------------------------*/
 	/*! 
 	 * @brief Push通知で付くバッジを削除する.
