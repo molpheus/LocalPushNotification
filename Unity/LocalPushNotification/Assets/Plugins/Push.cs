@@ -19,6 +19,7 @@ using System.Collections;
  *
  * */
 /*==================================================*/
+[RequireComponent(typeof(RemotePushNotification))]
 public class Push : MonoBehaviour
 {
 	#region EVENT
@@ -133,7 +134,7 @@ public class Push : MonoBehaviour
 	void OnApplicationPause(bool pauseStatus)
 	{
 		// バッジ削除.
-#if UNITY_IPHONE && UNITY_EDITOR
+#if (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
 		RemotePushNotification.Clean();
 		{
 			LocalNotification notification = new LocalNotification();

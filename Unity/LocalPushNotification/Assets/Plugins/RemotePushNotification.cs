@@ -11,6 +11,7 @@
 /*--------------------------------------------------*/
 using UnityEngine;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 /*==================================================*/
 /*!
@@ -56,7 +57,7 @@ using System.Collections;
  * 
  * */
 /*==================================================*/
-public class RemotePushNotification
+public class RemotePushNotification : MonoBehaviour
 {
 	// GoogleDeveloperCenterで取得したプロジェクト番号を入力.
 	public static string GCM_PROJECT_NUMBER = "993610505289";//"993610505289";
@@ -94,18 +95,7 @@ public class RemotePushNotification
 #endif
 	}
 
-#if UNITY_IPHONE
-	/* Objective-Cの関数を呼び出せるように宣言 */
-	/* @note 今回は無し */
-	[DllImport("__Internal")]
-    private static extern string GetDeviceTokenChr();
-
-	[DllImport("__Internal")]
-	private static extern bool GotDeviceToken();
-
-	[DllImport("__Internal")]
-	private static extern void StartDeviceToken();
-
+#if (UNITY_IOS || UNITY_IPHONE)
 	[DllImport("__Internal")]
 	static extern void CleanIconBadge_();
 #endif
@@ -117,7 +107,7 @@ public class RemotePushNotification
 	/*------------------------------------------------------------------------------------------*/
 	public static void Clean()
 	{
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
 		CleanIconBadge_();
 #endif
 	}
