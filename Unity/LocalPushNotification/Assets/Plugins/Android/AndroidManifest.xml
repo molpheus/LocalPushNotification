@@ -15,9 +15,29 @@
 			</intent-filter>
 		</activity>
 
+		<!-- Local Push Notice -->
 		<receiver android:name="jp.co.zerodiv.localnotification.NotificationReceiver" android:process=":remote"/>
+
+		<!-- Remote Push Notice -->
+		<receiver android:name="plugin.push.GcmBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+		<intent-filter>
+			<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+			<category android:name="com.molmolgames.push.test" />
+		</intent-filter>
+		</receiver>
+		<service android:name="plugin.push.GcmIntentService">
+		</service>
+
   </application>
-	<uses-permission android:name="android.permission.INTERNET" />
+
+	<!-- local push permission -->
+  <uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<!-- remote push permission -->
+	<permission android:name="com.molmolgames.push.test.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.molmolgames.push.test.permission.C2D_MESSAGE" />
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
 </manifest>

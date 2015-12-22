@@ -1,7 +1,6 @@
 ﻿/*==================================================*/
 /*!
  * @file LocalPushNotification.cs
- * @author toru yamaguchi
  * @date 2015/12/21
  * */
 /*==================================================*/
@@ -21,7 +20,7 @@ using System.Collections.Generic;
  * 
  * Android
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * [java plugin] NativeLocalNotification. 
+ * [jar plugin] NativeLocalNotification. 
  * Local push notification Main AndroidManifest.xml add permissions and application
  * 
  * add main <application>
@@ -38,6 +37,7 @@ using System.Collections.Generic;
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * Unity LocalPushNotification service
  * [iOS 8+] It can not be used to not allow push
+ * 
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * 
  * 
@@ -207,34 +207,6 @@ public class LocalPushNotification
 		NotificationServices.ScheduleLocalNotification (notification);
 	}
 #endif
-
-	static public void ClearBadge()
-	{
-#if (UNITY_IOS || UNITY_IPHONE)
-		LocalNotification l = new LocalNotification();
-		l.applicationIconBadgeNumber  = -1;		
-		NotificationServices.PresentLocalNotificationNow(l);
-
-		NotificationServices.CancelAllLocalNotifications();
-		NotificationServices.ClearLocalNotifications();
-#endif
-
-	}
-
-	static public void Initization()
-	{
-#if (UNITY_IOS || UNITY_IPHONE)
-		NotificationServices.RegisterForLocalNotificationTypes(
-			LocalNotificationType.Alert |
-			LocalNotificationType.Badge |
-			LocalNotificationType.Sound);
-		NotificationServices.RegisterForRemoteNotificationTypes(
-			RemoteNotificationType.Alert |
-			RemoteNotificationType.Badge |
-			RemoteNotificationType.Sound); 
-#endif
-	}
-
 }
 
 /*==================================================*/

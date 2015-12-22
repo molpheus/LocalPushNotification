@@ -22,76 +22,26 @@ using System.Collections;
 /*==================================================*/
 public class TestSorce : MonoBehaviour
 {
-	#region EVENT
-	/// <summary> . </summary>
-	public delegate void PushCall();
-	/// <summary> Push Call Action Event. </summary>
-	public event PushCall PushCallAction;
-
-	#endregion
-
 #if true//UNITY_EDITOR
 
 	void Awake()
 	{
-		LocalPushNotification.Initization ();
-		PushCallAction += call;
+		Push.PushCallAction += call;
 	}
 
 	void OnDestroy()
 	{
-		PushCallAction -= call;
+		Push.PushCallAction -= call;
 	}
-
-	/// <summary>
-	/// .
-	/// </summary>
-	void OnGUI()
-	{
-		if (GUI.Button(new Rect(0, 0, 100, 100), "SetAlarm"))
-		{
-			LocalPushNotification.SendLocalPush(10, "Local Push Title", "Local Push Text");
-		}
-	}
-
+	
 	/// <summary>
 	/// .
 	/// </summary>
 	void call()
 	{
-		for (int i = 0; i < 10; i++)
-		{
-			LocalPushNotification.SendLocalPush(10 + i, "Local Push Title" + i, "Local Push Text" + i);
-		}
+		LocalPushNotification.SendLocalPush(20, "Local Push Title", "Local Push Test Action");
 	}
 #endif
-
-	/// <summary>
-	/// .
-	/// </summary>
-	/// <param name="pauseStatus"></param>
-	void OnApplicationPause(bool pauseStatus)
-	{
-		bool pause = pauseStatus;
-		Debug.Log("pause action -> " + pause);
-
-		if (pause == true)
-		{
-			PushCallAction.Invoke();
-			LocalPushNotification.SaveUniqID();
-		}
-		else
-		{
-			LocalPushNotification.LoadUniqID();
-			while (LocalPushNotification.createUniqID > LocalPushNotification.LowUniqID)
-			{
-				LocalPushNotification.ClearNotification(LocalPushNotification.createUniqID);
-				LocalPushNotification.createUniqID--;
-			}
-			LocalPushNotification.ClearBadge();
-		}
-	}
-
 }
 
 /*==================================================*/
