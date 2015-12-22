@@ -1,0 +1,31 @@
+// apply plugin: 'com.android.application'
+
+apply plugin: 'java'
+
+// low JDK version 1.7
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+jar.baseName = 'NativeLocalNotification'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+// support-v4
+configurations {
+    all*.exclude group: 'com.android.support', module: 'support-v4'
+}
+
+//
+task copyLibs << {
+    configurations.compile.each { lib ->
+        if (lib.path.startsWith("${projectDir}/libs")) {
+            // libs内のものはコピー対象外
+            return
+        }
+        copy {
+            from lib.path
+            into '../../../Assets/Plugins/Android'
+        }
+    }
+}
