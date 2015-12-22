@@ -34,6 +34,7 @@ public class TestSorce : MonoBehaviour
 
 	void Awake()
 	{
+		LocalPushNotification.Initization ();
 		PushCallAction += call;
 	}
 
@@ -87,6 +88,7 @@ public class TestSorce : MonoBehaviour
 				LocalPushNotification.ClearNotification(LocalPushNotification.createUniqID);
 				LocalPushNotification.createUniqID--;
 			}
+			LocalPushNotification.ClearBadge();
 		}
 	}
 

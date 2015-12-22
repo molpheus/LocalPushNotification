@@ -36,25 +36,8 @@ using System.Collections.Generic;
  * 
  * iOS
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+ * Unity LocalPushNotification service
+ * [iOS 8+] It can not be used to not allow push
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * 
  * 
@@ -67,6 +50,7 @@ public class LocalPushNotification
 	/// <summary> 制作したID. </summary>
 	static public int createUniqID = LowUniqID;
 
+	/// <summary> 制作したID. </summary>
 	const string SaveKey = "LocalPushUniqID";
 
 	/// <summary>
@@ -124,6 +108,8 @@ public class LocalPushNotification
 		AndroidJavaObject m_plugin = new AndroidJavaObject("jp.co.zerodiv.localnotification.LocalPushNotification");
 		if(m_plugin != null)
 		{ m_plugin.Call("sendNotification", unixtime, primary_key, content_title); }
+#elif (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+		SendLocalPushiOS(unixtime, primary_key, content_title);
 #endif
 	}
 
@@ -140,6 +126,8 @@ public class LocalPushNotification
 		AndroidJavaObject m_plugin = new AndroidJavaObject("jp.co.zerodiv.localnotification.LocalPushNotification");
 		if (m_plugin != null)
 		{ m_plugin.Call("sendNotification", unixtime, primary_key, content_title, content_text); }
+#elif (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+		SendLocalPushiOS(unixtime, primary_key, content_text);
 #endif
 	}
 
@@ -157,6 +145,9 @@ public class LocalPushNotification
 		AndroidJavaObject m_plugin = new AndroidJavaObject("jp.co.zerodiv.localnotification.LocalPushNotification");
 		if (m_plugin != null)
 		{ m_plugin.Call("sendNotification", unixtime, primary_key, ticker, content_title, content_text); }
+#elif (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+		SendLocalPushiOS(unixtime, primary_key, content_text);
+
 #endif
 	}
 
@@ -175,6 +166,8 @@ public class LocalPushNotification
 		AndroidJavaObject m_plugin = new AndroidJavaObject("jp.co.zerodiv.localnotification.LocalPushNotification");
 		if (m_plugin != null)
 		{ m_plugin.Call("sendNotification", unixtime, primary_key, ticker, content_title, content_text, sound_path); }
+#elif (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+		SendLocalPushiOS(unixtime, primary_key, content_text);
 #endif
 	}
 
@@ -191,8 +184,57 @@ public class LocalPushNotification
 		AndroidJavaObject m_plugin = new AndroidJavaObject("jp.co.zerodiv.localnotification.LocalPushNotification");
 		if (m_plugin != null)
 		{ m_plugin.Call("clearNotification", primary_key); }
+#elif (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+		LocalNotification notification = NotificationServices.GetLocalNotification(primary_key);
+		if(notification != null){
+			NotificationServices.CancelLocalNotification(notification);
+		}
 #endif
 	}
+
+#if (UNITY_IOS || UNITY_IPHONE) && !UNITY_EDITOR
+	static public void SendLocalPushiOS(long unixtime, string context_text)
+	{
+		SendLocalPushiOS (unixtime, createID(), context_text);
+	}
+
+	static public void SendLocalPushiOS(long unixtime, int primary_key, string context_text)
+	{
+		LocalNotification notification = new LocalNotification ();
+		notification.applicationIconBadgeNumber = primary_key;
+		notification.fireDate = System.DateTime.Now.AddSeconds (unixtime);
+		notification.alertBody = context_text;
+		NotificationServices.ScheduleLocalNotification (notification);
+	}
+#endif
+
+	static public void ClearBadge()
+	{
+#if (UNITY_IOS || UNITY_IPHONE)
+		LocalNotification l = new LocalNotification();
+		l.applicationIconBadgeNumber  = -1;		
+		NotificationServices.PresentLocalNotificationNow(l);
+
+		NotificationServices.CancelAllLocalNotifications();
+		NotificationServices.ClearLocalNotifications();
+#endif
+
+	}
+
+	static public void Initization()
+	{
+#if (UNITY_IOS || UNITY_IPHONE)
+		NotificationServices.RegisterForLocalNotificationTypes(
+			LocalNotificationType.Alert |
+			LocalNotificationType.Badge |
+			LocalNotificationType.Sound);
+		NotificationServices.RegisterForRemoteNotificationTypes(
+			RemoteNotificationType.Alert |
+			RemoteNotificationType.Badge |
+			RemoteNotificationType.Sound); 
+#endif
+	}
+
 }
 
 /*==================================================*/
